@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="36d7e906-b2dc-4208-8b4e-ae02942df6f6" name="변경" comment="voice meeter 설정 및 출력 테스트 완료">
+    <list default="true" id="36d7e906-b2dc-4208-8b4e-ae02942df6f6" name="변경" comment="voice meeter 설정 및 출력 테스트">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,13 +132,22 @@
       <option name="project" value="LOCAL" />
       <updated>1756162815063</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="voice meeter 설정 및 출력 테스트">
+      <option name="closed" value="true" />
+      <created>1756172846999</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1756172846999</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="최조의 목적성과 시작" />
     <MESSAGE value="구글 tts demo code 작성 및 실행 확인" />
     <MESSAGE value="voice meeter 설정 및 출력 테스트 완료" />
-    <option name="LAST_COMMIT_MESSAGE" value="voice meeter 설정 및 출력 테스트 완료" />
+    <MESSAGE value="voice meeter 설정 및 출력 테스트" />
+    <option name="LAST_COMMIT_MESSAGE" value="voice meeter 설정 및 출력 테스트" />
   </component>
 </project>

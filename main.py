@@ -2,6 +2,8 @@ import os
 import sys
 import argparse
 import subprocess
+import pygame
+import time
 from google.cloud import texttospeech
 from google.api_core.exceptions import GoogleAPIError, RetryError, NotFound
 
@@ -41,65 +43,47 @@ def list_voices():
 
 def synthesize_and_play(text_to_synthesize, voice_name):
     """
-    텍스트를 음성으로 변환하고, ffplay와 환경 변수를 사용하여
+    텍스트를 음성으로 변환하고, pygame을 사용하여
     지정된 오디오 장치로 직접 재생합니다.
     """
     print(f"\n변환할 텍스트: '{text_to_synthesize}'")
     print(f"사용할 목소리: '{voice_name}'")
 
     try:
-        # ... (이전과 동일한 Text-to-Speech API 호출 부분) ...
+        # --- Google TTS API 호출 부분 (기존과 동일) ---
         synthesis_input = texttospeech.SynthesisInput(text=text_to_synthesize)
-        voice = texttospeech.VoiceSelectionParams(
-            language_code="ko-KR",
-            name=voice_name
-        )
-        audio_config = texttospeech.AudioConfig(
-            audio_encoding=texttospeech.AudioEncoding.MP3
-        )
-        response = client.synthesize_speech(
-            input=synthesis_input, voice=voice, audio_config=audio_config
-        )
+        voice = texttospeech.VoiceSelectionParams(language_code="ko-KR", name=voice_name)
+        audio_config = texttospeech.AudioConfig(audio_encoding=texttospeech.AudioEncoding.MP3)
+        response = client.synthesize_speech(input=synthesis_input, voice=voice, audio_config=audio_config)
         output_filename = "output.mp3"
         with open(output_filename, "wb") as out_file:
             out_file.write(response.audio_content)
             print(f'✔️ 오디오 파일이 "{output_filename}"로 성공적으로 저장되었습니다.')
 
-        # -------------------------------------------------------------------------
-        # 새로운 ffplay 실행 방식으로 완전히 변경합니다.
-        # -------------------------------------------------------------------------
-        ffplay_path = r"D:\util\ffmpeg\bin\ffplay.exe"
-
-        # 🔊 여기를 확인하세요: 장치 이름에 띄어쓰기를 추가했습니다.
-        # 만약 실제 이름에 띄어쓰기가 없다면 다시 지워주세요.
+        # --- pygame을 사용한 재생 부분 ---
+        # 🔊 여기에 Windows 소리 설정에 표시된 정확한 장치 이름을 입력하세요.
+        #    첫 번째 질문에서 주셨던 목록의 이름을 참고하는 것이 가장 좋습니다.
         output_device_name = "CABLE Input(VB-Audio Virtual Cable)"
 
-        print(f"🔊 ffplay를 사용하여 '{output_device_name}' 장치로 오디오를 재생합니다.")
+        print(f"🔊 pygame을 사용하여 '{output_device_name}' 장치로 오디오를 재생합니다.")
 
-        my_env = os.environ.copy()
+        # 지정된 장치로 오디오 시스템 초기화
+        pygame.mixer.init(devicename=output_device_name)
 
-        # 2. 가장 중요한 부분: 드라이버를 'directsound'로 변경합니다.
-        my_env["SDL_AUDIODRIVER"] = "directsound"
+        # mp3 파일 로드 및 재생
+        pygame.mixer.music.load(output_filename)
+        pygame.mixer.music.play()
 
-        my_env["SDL_AUDIODEVICENAME"] = output_device_name
+        # 재생이 끝날 때까지 대기
+        while pygame.mixer.music.get_busy():
+            time.sleep(0.1)
 
-        subprocess.run(
-            [ffplay_path, "-nodisp", "-autoexit", output_filename],
-            check=True,
-            env=my_env
-        )
         print("🔊 재생이 완료되었습니다.")
+        pygame.mixer.quit() # 리소스 정리
 
-    except NotFound:
-        print(f"오류: '{voice_name}' 음성을 찾을 수 없습니다.")
-    except (GoogleAPIError, RetryError) as e:
-        print(f"오류: Text-to-Speech API 요청 중 문제가 발생했습니다. - {e}")
-    except FileNotFoundError:
-        print(f"\n오류: 지정된 경로에서 'ffplay.exe'를 찾을 수 없습니다: {ffplay_path}")
-    except subprocess.CalledProcessError as e:
-        # 환경 변수 방식이 실패했다면, 보통 장치 이름이 틀린 경우입니다.
-        print(f"오류: ffplay 실행 중 문제가 발생했습니다. - {e}")
-        print("➡️ 장치 이름이 정확한지 다시 확인해주세요: '{}'".format(output_device_name))
+    except pygame.error as e:
+        print(f"오류: pygame에서 오디오 장치를 찾거나 재생하는 데 실패했습니다. - {e}")
+        print("➡️ 장치 이름을 다시 확인해 보세요. Windows 재생 장치 목록의 이름과 정확히 일치해야 합니다.")
     except Exception as e:
         print(f"예상치 못한 오류가 발생했습니다: {e}")
 
