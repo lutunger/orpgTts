@@ -1,7 +1,6 @@
 import os
 import sys
 import argparse
-import subprocess
 import pygame
 import time
 from google.cloud import texttospeech
