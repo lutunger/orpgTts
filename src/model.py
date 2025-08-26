@@ -1,5 +1,4 @@
 import os
-import sys
 from google.cloud import texttospeech
 from google.api_core.exceptions import GoogleAPIError, RetryError
 
