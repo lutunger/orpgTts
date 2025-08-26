@@ -1,3 +1,4 @@
 pyaudio
 google-cloud-texttospeech
 simpleaudio
+pygame

@@ -72,21 +72,21 @@ def synthesize_and_play(text_to_synthesize, voice_name):
 
         # 🔊 여기를 확인하세요: 장치 이름에 띄어쓰기를 추가했습니다.
         # 만약 실제 이름에 띄어쓰기가 없다면 다시 지워주세요.
-        output_device_name = "CABLE Input(VB-Audio Voicemeeter VAIO)"
+        output_device_name = "CABLE Input(VB-Audio Virtual Cable)"
 
         print(f"🔊 ffplay를 사용하여 '{output_device_name}' 장치로 오디오를 재생합니다.")
 
-        # 현재 환경 변수를 복사한 뒤, SDL 오디오 장치 지정 변수를 추가합니다.
-        # 이 방법은 ffplay(SDL 기반)에게 어떤 오디오 장치를 사용할지 직접 알려줍니다.
         my_env = os.environ.copy()
+
+        # 2. 가장 중요한 부분: 드라이버를 'directsound'로 변경합니다.
+        my_env["SDL_AUDIODRIVER"] = "directsound"
+
         my_env["SDL_AUDIODEVICENAME"] = output_device_name
 
-        # -nodisp: 비디오 창 숨김, -autoexit: 재생 후 자동 종료
-        # env=my_env: 장치 이름이 설정된 환경 변수를 적용하여 실행
         subprocess.run(
             [ffplay_path, "-nodisp", "-autoexit", output_filename],
             check=True,
-            env=my_env  # 이 부분이 핵심입니다!
+            env=my_env
         )
         print("🔊 재생이 완료되었습니다.")
 
